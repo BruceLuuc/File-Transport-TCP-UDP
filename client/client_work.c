@@ -17,8 +17,7 @@ void menu(struct ip_port *ip){
 }
 
 
-void get_server_list(struct ip_port *ip_p)
-{
+void get_server_list(struct ip_port *ip_p){
     printf("searching available servers...\n");
 	int sockListen = Socket(AF_INET, SOCK_DGRAM, 0);
 
@@ -96,8 +95,7 @@ input:
 
 
 
-int split(struct command *cmd, char *line)
-{
+int split(struct command *cmd, char *line){
 
     if (cmd==NULL||line==NULL)return -1;
 
@@ -168,8 +166,7 @@ char *input(char *str){
     return str;
 }
 
-void get_input(struct command *cmd, struct ip_port *ip)
-{
+void get_input(struct command *cmd, struct ip_port *ip){
     bzero(&file, sizeof(struct fileinfo));
     char inputline[1024] = {'\0'};
     char *cmdline = NULL;
@@ -185,8 +182,7 @@ getcmd:
 }
 
 
-void exec_cmd(struct command *cmd, struct ip_port *ip)
-{
+void exec_cmd(struct command *cmd, struct ip_port *ip){
     if (get_cmd(cmd->filename)==EXIT)
         exit(0);
     /** 以下两步用TCP传送 **/
@@ -207,8 +203,7 @@ void exec_cmd(struct command *cmd, struct ip_port *ip)
     }
 }
 
-void send_cmd(struct command *cmd, struct ip_port *ip)
-{
+void send_cmd(struct command *cmd, struct ip_port *ip){
     usleep(100000);//先让服务器进入accept等待客户端状态
     int sock_fd = Client_init(ip, TCP);
     int cmdlen = sizeof(struct command);
@@ -219,8 +214,7 @@ void send_cmd(struct command *cmd, struct ip_port *ip)
     close(sock_fd);
 }
 
-void send_fileinfo(struct command *cmd, struct ip_port *ip)
-{
+void send_fileinfo(struct command *cmd, struct ip_port *ip){
     printf("\n########### 发送文件信息 ###########\n");
     usleep(100000);//先让服务器进入accept等待客户端状态
     int sock_fd = Client_init(ip, TCP);
@@ -257,8 +251,7 @@ void send_fileinfo(struct command *cmd, struct ip_port *ip)
 }
 
 
-void recv_file(struct command *cmd, struct ip_port *ip)
-{
+void recv_file(struct command *cmd, struct ip_port *ip){
     int b_tcp = get_cmd(cmd->mode)==UDP? UDP:TCP;
     if (file.used==0){
         printf("server: 404 Not Found\n");
@@ -357,8 +350,7 @@ over:
      get_input(cmd, ip);
 }
 
-void send_block(struct command *cmd, struct ip_port *ip)
-{
+void send_block(struct command *cmd, struct ip_port *ip){
     printf("\n############ 开始上传 ############\n");
     int b_tcp = get_cmd(cmd->mode)==UDP? UDP:TCP;
     

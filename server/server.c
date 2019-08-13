@@ -2,9 +2,7 @@
 
 int listenfd;
 
-int main()
-{
-
+int main(){
     /** 创建广播线程 **/
 	pthread_t broadthrd;
 	int err=-1;
@@ -22,8 +20,7 @@ int main()
         bzero(&cmd,sizeof(struct command));
         recv_cmd(&cmd);
         printf("cmd:%s -%s -%s\n",cmd.filename,cmd.cmd,cmd.mode); 
-        recv_fileinfo(&cmd);
-  
+        recv_fileinfo(&cmd); 
 
         switch (get_cmd(cmd.cmd)){
 

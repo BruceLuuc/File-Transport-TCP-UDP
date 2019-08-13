@@ -11,8 +11,7 @@ extern int listenfd;
 struct sockaddr_in cliaddr;
 socklen_t          clilen= sizeof(struct sockaddr_in);
 
-void *broad()
-{
+void *broad(){
     struct ip_port ip;
     strcpy(ip.ip, IP);
     ip.port=PORT;
@@ -49,8 +48,7 @@ void *broad()
 
 
 
-void recv_cmd(struct command *cmd)
-{
+void recv_cmd(struct command *cmd){
     int connfd = Accept(listenfd, (struct sockaddr *) &cliaddr, (socklen_t *)&clilen);   
     int cmdlen = sizeof(struct command);
     char buf[cmdlen+1];
@@ -62,8 +60,7 @@ void recv_cmd(struct command *cmd)
 }
 
 
-void recv_fileinfo(struct command *cmd)
-{
+void recv_fileinfo(struct command *cmd){
     printf("############ recv File information ############\n");
     bzero(&file, sizeof(struct fileinfo));    
     int connfd = Accept(listenfd, (struct sockaddr *) &cliaddr, (socklen_t *)&clilen); 
@@ -129,8 +126,7 @@ void recv_fileinfo(struct command *cmd)
 }
 
 
-void recv_block(struct command *cmd)
-{   
+void recv_block(struct command *cmd){
     printf("\n############ 接收文件 ############\n");
     int b_tcp = get_cmd(cmd->mode)==UDP? UDP:TCP;
     

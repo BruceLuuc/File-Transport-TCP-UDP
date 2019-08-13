@@ -1,7 +1,6 @@
 #include "client_work.h"
 
-int main()
-{
+int main(){
     struct command cmd;
     struct ip_port ip;
     
