@@ -25,13 +25,13 @@
 #include <readline/history.h>
 #include "md5.h"
 
-#define M  					(1024*1024)
-#define BUFFER_SIZE          1024            //UDP分包大小
+#define M                 (1024*1024)
+#define BUFFER_SIZE       1024            //UDP分包大小
 
-#define IP 					"127.0.0.3"
-#define PORT  				9527            //TCP连接端口
-#define UDP_PORT            8000            //UDP端口
-#define LISTENQ  			666
+#define IP                "127.0.0.3"
+#define PORT              9527            //TCP连接端口
+#define UDP_PORT          8000            //UDP端口
+#define LISTENQ           666
 
 /** 服务器能保存的文件的最大数量 **/
 #define FILE_MAX            64
@@ -48,12 +48,12 @@
 #define UNKNOWN         7
 
 /** 命令行颜色 **/
-#define DEFAULT               "\033[0m"
+#define DEFAULT              "\033[0m"
 #define RED                  "\e[0;31m"
 #define BLUE                 "\e[0;34m"
 #define BLACK                "\e[0;30m"
 
-#define MIN(a, b)               (((a) < (b)) ? (a) : (b))  
+#define MIN(a, b)            (((a) < (b)) ? (a) : (b))  
 
 
 /** 文件信息 **/

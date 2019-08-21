@@ -1,12 +1,12 @@
 #include "common.h"
 
 /** UDP包全局变量 **/
-int                 send_id = 0;    /** UDP发送id **/
-int                 receive_id = 0; /** UDP接收id **/
-int                 id = 1;         /** UDP确认 **/
+int     send_id = 0;    /** UDP发送id **/
+int     receive_id = 0; /** UDP接收id **/
+int     id = 1;         /** UDP确认 **/
 
 int Socket(int family, int type, int protocol){
-    int             n;
+    int   n;
 
     if ((n = socket(family, type, protocol)) < 0){
         perror("socket error");
@@ -26,7 +26,7 @@ void Bind(int fd, const struct sockaddr * sa, socklen_t salen){
 
 
 void Listen(int fd, int backlog){
-    char *          ptr;
+    char     *ptr;
 
     if ((ptr = getenv("LISTENQ")) != NULL)
         backlog = atoi(ptr);
@@ -39,7 +39,7 @@ void Listen(int fd, int backlog){
 
 
 int Accept(int fd, struct sockaddr * sa, socklen_t * salenptr){
-    int             n;
+    int     n;
 
     if ((n = accept(fd, sa, salenptr)) < 0){
         perror("Accept Error!");
@@ -58,10 +58,10 @@ void Connect(int fd, const struct sockaddr * sa, socklen_t salen){
 }
 
 int Client_init(struct ip_port *ip_p, int mode){
-    int         sockfd = -1;
+    int   sockfd = -1;
     if (mode == TCP) {
-        char        ip[12] = {'\0'};
-        int         port =   ip_p->port;
+        char    ip[12] = {'\0'};
+        int     port = ip_p->port;
         strcpy(ip,ip_p->ip);
         sockfd = Socket(AF_INET, SOCK_STREAM, 0);    
         struct sockaddr_in servaddr;
@@ -78,8 +78,8 @@ int Client_init(struct ip_port *ip_p, int mode){
 
 
 int Server_init(int mode){
-    int         listen_fd = -1;
-    int         port = PORT;
+    int     listen_fd = -1;
+    int     port = PORT;
     
     struct sockaddr_in server_addr;
     bzero(&server_addr, sizeof(server_addr));
@@ -105,7 +105,7 @@ int Server_init(int mode){
 
 
 int Open(char * filename){
-    int             fd  = 0;
+    int     fd  = 0;
 
     if ((fd = open(filename, O_RDWR)) == -1){
         printf("open error\n");
@@ -116,12 +116,12 @@ int Open(char * filename){
 }
 
 int Writen(int fd, const void * vptr, const int n){
-    int          nleft;
-    int          nwritten;
-    char *          ptr;
+    int      nleft;
+    int      nwritten;
+    char     *ptr;
 
-    ptr                 = (char *)vptr;
-    nleft               = n;
+    ptr = (char *)vptr;
+    nleft = n;
 
     while (nleft > 0){
         if ((nwritten = write(fd, ptr, nleft)) < 0){
@@ -135,8 +135,8 @@ int Writen(int fd, const void * vptr, const int n){
             break;
         }
 
-        nleft               -= nwritten;
-        ptr                 += nwritten;
+        nleft -= nwritten;
+        ptr += nwritten;
     }
 
     return (n - nleft);
@@ -146,11 +146,11 @@ int Writen(int fd, const void * vptr, const int n){
 
 
 int Readn(int fd, const void * vptr, const int n){
-    int          nleft;
-    int         nread;
+    int   nleft;
+    int   nread;
 
-    nleft               = n;
-    char *          ptr = (char*)vptr;
+    nleft = n;
+    char *ptr = (char*)vptr;
 
     while (nleft > 0){
         if ((nread = read(fd, ptr, nleft)) < 0){
@@ -164,8 +164,8 @@ int Readn(int fd, const void * vptr, const int n){
             break;
         }
 
-        nleft               -= nread;
-        ptr                 += nread;
+        nleft -= nread;
+        ptr += nread;
     }
 
     return (n - nleft);
@@ -173,7 +173,7 @@ int Readn(int fd, const void * vptr, const int n){
 
 
 int createfile(char * filename, int size){
-    int             fd  = open(filename, O_RDWR | O_CREAT);
+    int   fd = open(filename, O_RDWR | O_CREAT);
 
     fchmod(fd, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
     lseek(fd, size - 1, SEEK_SET);
@@ -194,31 +194,31 @@ size_t get_filesize(char *path){
 
 
 char * Md5(char * filename, char *md5){
-	int 			fd = Open(filename);
+    int  fd = Open(filename);
 
-	unsigned char 	*md = (unsigned char *) malloc(16*sizeof(char));
-	if (md == NULL || md5==NULL){
+    unsigned char     *md = (unsigned char *) malloc(16*sizeof(char));
+    if (md == NULL || md5==NULL){
         perror("malloc md5");
         exit (-1);
     }
 
-	char 			tmp[3] = {'\0'};
+    char     tmp[3] = {'\0'};
 
-	size_t          file_size = get_filesize(filename);
-	unsigned char   *mbegin  = (unsigned char *)mmap(NULL, file_size, PROT_WRITE | PROT_READ, MAP_SHARED, fd, 0);
+    size_t          file_size = get_filesize(filename);
+    unsigned char   *mbegin  = (unsigned char *)mmap(NULL, file_size, PROT_WRITE | PROT_READ, MAP_SHARED, fd, 0);
     
-	md = MD5(mbegin, file_size, md);
+    md = MD5(mbegin, file_size, md);
 
-	for(int i = 0; i < 16;i++){
-		sprintf(tmp, "%02X", md[i]);//X 16进制大写
-		strcat(md5, tmp);//追加到md5
-	}
+    for(int i = 0; i < 16;i++){
+        sprintf(tmp, "%02X", md[i]);//X 16进制大写
+        strcat(md5, tmp);//追加到md5
+    }
 
-	munmap(mbegin,file_size);
-	free(md);
-	md=NULL;
-	close(fd);
-	return md5;
+    munmap(mbegin,file_size);
+    free(md);
+    md=NULL;
+    close(fd);
+    return md5;
 }
 
 
@@ -251,8 +251,8 @@ int send_by_udp(int fd, char *seek, int left, struct sockaddr *addr){
     struct RecvPack        data;
     bzero(&pack_info, sizeof(pack_info));
     bzero(&data, sizeof(data));
-    socklen_t                 serv_len= sizeof(struct sockaddr_in);
-    int                     buf_size = MIN(left, BUFFER_SIZE);
+    socklen_t   serv_len = sizeof(struct sockaddr_in);
+    int         buf_size = MIN(left, BUFFER_SIZE);
     int n=-1;
     int res = 0; //成功发送出去的字节数
     memcpy(data.buf, seek, buf_size);//先拷贝进来
@@ -271,7 +271,7 @@ int send_by_udp(int fd, char *seek, int left, struct sockaddr *addr){
                 return -1;
             }  
             recvfrom(fd, (char *) &pack_info, sizeof(pack_info), 0, (struct sockaddr *) addr, &serv_len);
-            receive_id          = pack_info.id;
+            receive_id  = pack_info.id;
             res = buf_size;
         }
         else 
@@ -290,7 +290,7 @@ int send_by_udp(int fd, char *seek, int left, struct sockaddr *addr){
             return -1;
         } 
         recvfrom(fd, (char *) &pack_info, sizeof(pack_info), 0, (struct sockaddr *) addr, &serv_len);
-        receive_id          = pack_info.id;
+        receive_id = pack_info.id;
     }
 
     return res;
@@ -303,7 +303,7 @@ int recv_by_udp(int fd, char *seek, struct sockaddr *addr){
     struct RecvPack        data;
     bzero(&pack_info, sizeof(pack_info));
     bzero(&data, sizeof(data));
-    socklen_t                 clilen= sizeof(struct sockaddr_in);
+    socklen_t   clilen= sizeof(struct sockaddr_in);
     int res=0;//本次成功写入的字节数
     //printf("#1 Pack_id: %d\n", id);
     if (Readable_timeo(fd, 10)==0){
@@ -349,24 +349,24 @@ void reset_udp_id(){
 
 /** > 0 if descriptor is readable **/
 int readable_timeo(int fd, int sec){
-	fd_set			rset;
-	struct timeval	tv;
+    fd_set         rset;
+    struct timeval tv;
 
-	FD_ZERO(&rset);
-	FD_SET(fd, &rset);
+    FD_ZERO(&rset);
+    FD_SET(fd, &rset);
 
-	tv.tv_sec = sec;
-	tv.tv_usec = 0;
+    tv.tv_sec = sec;
+    tv.tv_usec = 0;
 
-	return(select(fd+1, &rset, NULL, NULL, &tv));
+    return(select(fd+1, &rset, NULL, NULL, &tv));
 }
 
 int Readable_timeo(int fd, int sec){
-	int		n;
+    int    n;
 
-	if ( (n = readable_timeo(fd, sec)) < 0)
-		perror("readable_timeo error");
-	return(n);
+    if ( (n = readable_timeo(fd, sec)) < 0)
+        perror("readable_timeo error");
+    return(n);
 }
 
 

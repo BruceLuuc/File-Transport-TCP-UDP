@@ -21,29 +21,29 @@ void *broad(){
     bzero(msg,ip_len+1);
     memcpy(msg, &ip, ip_len);
 
-	int brdcFd = Socket(PF_INET, SOCK_DGRAM, 0);
+    int brdcFd = Socket(PF_INET, SOCK_DGRAM, 0);
 
-	int optval = 1;//这个值一定要设置，否则可能导致sendto()失败
-	setsockopt(brdcFd, SOL_SOCKET, SO_BROADCAST | SO_REUSEADDR, &optval, sizeof(int));
-	struct sockaddr_in theirAddr;
-	memset(&theirAddr, 0, sizeof(struct sockaddr_in));
-	theirAddr.sin_family = AF_INET;
-	theirAddr.sin_addr.s_addr = inet_addr("255.255.255.255");
-	theirAddr.sin_port = htons(4001);
+    int optval = 1;//这个值一定要设置，否则可能导致sendto()失败
+    setsockopt(brdcFd, SOL_SOCKET, SO_BROADCAST | SO_REUSEADDR, &optval, sizeof(int));
+    struct sockaddr_in theirAddr;
+    memset(&theirAddr, 0, sizeof(struct sockaddr_in));
+    theirAddr.sin_family = AF_INET;
+    theirAddr.sin_addr.s_addr = inet_addr("255.255.255.255");
+    theirAddr.sin_port = htons(4001);
     //int timer = 0;//定时器
     for (;;){
-	    int sendBytes;
-	    if((sendBytes = sendto(brdcFd, msg, sizeof(msg), 0, (struct sockaddr *)&theirAddr, sizeof(struct sockaddr))) == -1){
-		    printf("sendto fail, errno=%d\n", errno);
-		    break;
-	    }
-	    //timer += 3;
+        int sendBytes;
+        if((sendBytes = sendto(brdcFd, msg, sizeof(msg), 0, (struct sockaddr *)&theirAddr, sizeof(struct sockaddr))) == -1){
+            printf("sendto fail, errno=%d\n", errno);
+            break;
+        }
+        //timer += 3;
         sleep(3);
         //if (timer > 180)//广播三分钟结束
             //break;
     }
-	close(brdcFd);
-	return (void*)0;
+    close(brdcFd);
+    return (void*)0;
 }
 
 

@@ -4,11 +4,11 @@ int listenfd;
 
 int main(){
     /** 创建广播线程 **/
-	pthread_t broadthrd;
-	int err=-1;
+    pthread_t broadthrd;
+    int err=-1;
     if (( (err = pthread_create(&broadthrd,NULL,broad,NULL))) !=0 ){
-		perror("can't create broad thread");
-		exit(-1);
+        perror("can't create broad thread");
+        exit(-1);
     }
 
     listenfd = Server_init(TCP);

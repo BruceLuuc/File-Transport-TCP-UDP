@@ -19,20 +19,20 @@ void menu(struct ip_port *ip){
 
 void get_server_list(struct ip_port *ip_p){
     printf("searching available servers...\n");
-	int sockListen = Socket(AF_INET, SOCK_DGRAM, 0);
+    int sockListen = Socket(AF_INET, SOCK_DGRAM, 0);
 
-	int set = 1;
-	setsockopt(sockListen, SOL_SOCKET, SO_REUSEADDR, &set, sizeof(int));
-	struct sockaddr_in recvAddr;
-	memset(&recvAddr, 0, sizeof(struct sockaddr_in));
-	recvAddr.sin_family = AF_INET;
-	recvAddr.sin_port = htons(4001);
-	recvAddr.sin_addr.s_addr = INADDR_ANY;
-	// 必须绑定，否则无法监听
-	Bind(sockListen, (struct sockaddr *)&recvAddr, sizeof(struct sockaddr));
+    int set = 1;
+    setsockopt(sockListen, SOL_SOCKET, SO_REUSEADDR, &set, sizeof(int));
+    struct sockaddr_in recvAddr;
+    memset(&recvAddr, 0, sizeof(struct sockaddr_in));
+    recvAddr.sin_family = AF_INET;
+    recvAddr.sin_port = htons(4001);
+    recvAddr.sin_addr.s_addr = INADDR_ANY;
+    // 必须绑定，否则无法监听
+    Bind(sockListen, (struct sockaddr *)&recvAddr, sizeof(struct sockaddr));
 
-	int recvbytes;
-	socklen_t addrLen = sizeof(struct sockaddr_in);
+    int recvbytes;
+    socklen_t addrLen = sizeof(struct sockaddr_in);
     int ip_len = sizeof(struct ip_port);
     struct ip_port servers[16];
     int indx=0;
@@ -41,13 +41,13 @@ void get_server_list(struct ip_port *ip_p){
     //搜索时间为5秒
     struct  timeval start;
     struct  timeval end;
-	gettimeofday(&start,NULL);
+    gettimeofday(&start,NULL);
     for(;;){
 recv:
         bzero(&ip,ip_len);
         bzero(msg,ip_len+1);
 
-	    if((recvbytes = recvfrom(sockListen, msg, 128, 0,(struct sockaddr *)&recvAddr, &addrLen)) != -1) {
+        if((recvbytes = recvfrom(sockListen, msg, 128, 0,(struct sockaddr *)&recvAddr, &addrLen)) != -1) {
             gettimeofday(&end,NULL);
             int timer=end.tv_sec-start.tv_sec;
             if (timer > 5 || indx > 15)
@@ -64,11 +64,11 @@ recv:
             servers[indx].port = ip.port;            
 
             indx += 1;
-	    }else{
-		    printf("recvfrom timeout\n");
+        }else{
+            printf("recvfrom timeout\n");
             break;
             //exit(0);
-	    }
+        }
     }
   
     close(sockListen);
@@ -224,12 +224,12 @@ void send_fileinfo(struct command *cmd, struct ip_port *ip){
     if (get_cmd(cmd->cmd)==PUT){
         file.filesize    = get_filesize(cmd->filename);
         char    md5[33] = {'\0'};
-	    Md5(file.filename, md5);
-	    strcpy(file.md5, md5);
-	}
+        Md5(file.filename, md5);
+        strcpy(file.md5, md5);
+    }
     file.pos=0;
-	file.intact=0;
-	file.used=0;
+    file.intact=0;
+    file.used=0;
 
     char            send_buf[256] ={'\0'};
 
