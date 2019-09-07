@@ -127,7 +127,6 @@ int Writen(int fd, const void * vptr, const int n){
         if ((nwritten = write(fd, ptr, nleft)) < 0){
             if (nwritten == n)
                 return - 1;
-
             else 
                 break;
         }
@@ -156,7 +155,6 @@ int Readn(int fd, const void * vptr, const int n){
         if ((nread = read(fd, ptr, nleft)) < 0){
             if (nleft == n)
                 return (-1);
-
             else 
                 break;
         }

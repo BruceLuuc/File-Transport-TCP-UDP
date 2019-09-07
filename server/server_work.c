@@ -8,11 +8,11 @@ struct fileinfo     g_files[FILE_MAX];  //客户端下载文件
 struct fileinfo     file;               //本次交互文件信息临时存放
 extern int listenfd;
 
-struct sockaddr_in cliaddr;
-socklen_t          clilen= sizeof(struct sockaddr_in);
+struct sockaddr_in  cliaddr;
+socklen_t           clilen= sizeof(struct sockaddr_in);
 
 void *broad(){
-    struct ip_port ip;
+    struct ip_port  ip;
     strcpy(ip.ip, IP);
     ip.port=PORT;
 
