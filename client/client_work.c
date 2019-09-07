@@ -222,7 +222,7 @@ void send_fileinfo(struct command *cmd, struct ip_port *ip){
 
     /** 若是上传，还需读入大小、MD5 **/
     if (get_cmd(cmd->cmd)==PUT){
-        file.filesize    = get_filesize(cmd->filename);
+        file.filesize = get_filesize(cmd->filename);
         char    md5[33] = {'\0'};
         Md5(file.filename, md5);
         strcpy(file.md5, md5);
@@ -231,9 +231,9 @@ void send_fileinfo(struct command *cmd, struct ip_port *ip){
     file.intact=0;
     file.used=0;
 
-    char            send_buf[256] ={'\0'};
+    char    send_buf[256] ={'\0'};
 
-    int             fileinfo_len = sizeof(struct fileinfo);
+    int     fileinfo_len = sizeof(struct fileinfo);
     memcpy(send_buf , &file, fileinfo_len);
     Writen(sock_fd, send_buf,  fileinfo_len);
 
@@ -297,7 +297,8 @@ void recv_file(struct command *cmd, struct ip_port *ip){
             left -= n;
             seek += n;
             printf("recv:%d  left:%dM  lseek:%d\n",n, left/M, file.pos);
-            progress_bar((100*((file.filesize-left)/M))/(file.filesize/M));
+            if(file.filesize > M)
+                progress_bar((100*((file.filesize-left)/M))/(file.filesize/M));
         }
         printf("======= TCP OK =======\n");
         close(sock_fd);
@@ -308,7 +309,7 @@ void recv_file(struct command *cmd, struct ip_port *ip){
          int sock_fd = Socket(AF_INET, SOCK_DGRAM, 0);
          
          char buf[10]="Download";//发送 使服务器先保存客户端地址
-         int                 serv_len= sizeof(struct sockaddr_in);
+         int  serv_len= sizeof(struct sockaddr_in);
          sendto(sock_fd, buf, 10,0,(struct sockaddr*)&serv_addr,serv_len);
         if (Readable_timeo(sock_fd, 8)==0){
                 printf("连接超时!\n");
@@ -325,7 +326,8 @@ void recv_file(struct command *cmd, struct ip_port *ip){
              left -= n;
              seek += n;
              //printf("#3 recv:%d  left:%dM  lseek:%d\n",n, left/M, file.pos);
-             progress_bar((100*((file.filesize-left)/M))/(file.filesize/M));
+             if(file.filesize > M)
+                progress_bar((100*((file.filesize-left)/M))/(file.filesize/M));
          }
          printf("======= UDP OK =======\n");
          reset_udp_id();
@@ -343,7 +345,8 @@ over:
          printf("已完成下载 100%%\n");
      }else{
          printf("文件缺损！！下载未完成...\n");
-         printf("下载进度 %d%%\n", (int)((100*(file.pos/M))/(file.filesize/M)) );
+         if(file.filesize > M)
+            printf("下载进度 %d%%\n", (int)((100*(file.pos/M))/(file.filesize/M)) );
      }   
      
      printf("############ 下载结束 ############\n"); 
@@ -374,7 +377,8 @@ void send_block(struct command *cmd, struct ip_port *ip){
             left -= n;
             seek += n;
             printf("send:%d  left:%dM\n",n, left/M);
-            progress_bar((100*((file.filesize-left)/M))/(file.filesize/M));
+            if(file.filesize > M)
+                progress_bar((100*((file.filesize-left)/M))/(file.filesize/M));
         }   
         printf("======= TCP OK =======!\n");
         close(sock_fd);
@@ -390,7 +394,8 @@ void send_block(struct command *cmd, struct ip_port *ip){
             left -= n;
             seek += n;
             //printf("#3 Send:%d  left:%dM\n", n, left/M);
-            progress_bar((100*((file.filesize-left)/M))/(file.filesize/M));
+            if(file.filesize > M)
+                progress_bar((100*((file.filesize-left)/M))/(file.filesize/M));
         }   
         printf("======= UDP OK =======\n");
         close(sock_fd);
